@@ -15,8 +15,8 @@ enum class Attempt_Entry_State {
     NOT_PRESENT
 };
 
-std::vector<int> random_sequence(int length, int min, int max);
-std::vector<int> input_sequence(int length, const std::string& prompt, std::function<bool(int)> valid_condition, const std::string& invalid);
+std::vector<int> random_sequence(std::size_t length, int min, int max);
+std::vector<int> input_sequence(std::size_t length, const std::string& prompt, std::function<bool(int)> valid_condition, const std::string& invalid);
 std::vector<Attempt_Entry_State> mastermind_compare(const std::vector<int>& attempt, const std::vector<int>& correct);
 
 int main() try {
@@ -94,12 +94,9 @@ int main() try {
 
 
 // Generate a random sequence of <length> integers ranging from <min> to <max>
-std::vector<int> random_sequence(int length, int min, int max){
+std::vector<int> random_sequence(std::size_t length, int min, int max){
 
     /* Pre-conditions */
-    // length must be >= 0 
-    if(length < 0)
-        throw std::invalid_argument("Length of random sequence cannot be negative.");
     // max must be >= min
     if(max < min)
         throw std::invalid_argument("Maximum possible random digit in a random sequence cannot be lesser than the minimum possible random digit.");
@@ -107,7 +104,7 @@ std::vector<int> random_sequence(int length, int min, int max){
     static std::mt19937 engine(std::random_device{}());
     std::uniform_int_distribution<int> distribution(min, max);
     std::vector<int> sequence(length);
-    for(int i = 0; i < length; ++i)
+    for(std::size_t i = 0; i < length; ++i)
         sequence[i] = distribution(engine);
 
     return sequence;
@@ -115,18 +112,12 @@ std::vector<int> random_sequence(int length, int min, int max){
 
 
 // Input a sequence of <length> integers by providing a prompt and handling invalid inputs
-std::vector<int> input_sequence(int length, const std::string& prompt, std::function<bool(int)> valid_condition, const std::string& invalid) {
-
-    /* Pre-conditions */
-    // length must be >= 0
-    if(length < 0)
-        throw std::invalid_argument("Length of sequence to be inputted cannot be negative.");
-    
+std::vector<int> input_sequence(std::size_t length, const std::string& prompt, std::function<bool(int)> valid_condition, const std::string& invalid) {
     std::vector<int> result(length);
     while(true) {
         bool valid = true;
         std::cout << prompt;
-        for(int i = 0; i < length; ++i) {
+        for(std::size_t i = 0; i < length; ++i) {
             std::cin >> result[i];
             if(!std::cin || !valid_condition(result[i])) {
                 valid = false;
